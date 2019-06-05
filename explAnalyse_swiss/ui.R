@@ -1,7 +1,7 @@
 library(shiny)
 library(datasets)
 
-
+# Code der nur 1x laufen muss außerhalb ver server Funktion um performance zu verbessern  
 swiss2 <- data.frame(swiss$Fertility, swiss$Agriculture, swiss$Education, swiss$Catholic,swiss$Infant.Mortality) 
 colnames(swiss2) <- c("Fertility", "Agriculture", "Education" , "Catholic",  "Infant.Mortality")
 
@@ -9,6 +9,7 @@ nice <- function(data_values){
   #layout settings
   def.par <- par(no.readonly = TRUE)
   layout(matrix(c(1,2,3),1,3, byrow = FALSE), respect = T)
+  
   #plots
   hist(data_values, freq = F)
   lines(density(data_values))
@@ -16,6 +17,7 @@ nice <- function(data_values){
   boxplot(data_values, horizontal = T)
   qqnorm(data_values)
   qqline(data_values, col=2)
+  
   #change layout settings back to default
   par(def.par)
 }
@@ -30,6 +32,7 @@ ui <- fluidPage(
   
   # Auswahl zwischen Datenexploration der einzelnen Variablen und dem Scatter plot 
   # input function:  
+  actionButton(inputId = "viewAction", label = "View Data"),
   actionButton(inputId = "singleAction", label = "Explore one Variable"),
   actionButton(inputId = "scatterAction", label = "Scatterplot"),
   # output function: 
@@ -42,7 +45,8 @@ ui <- fluidPage(
   # output function 
   plotOutput("summaryPlot"), 
   verbatimTextOutput("summaryStatisitcs"), 
-  plotOutput("scatterplot")
+  plotOutput("scatterplot"),
+  tableOutput("view")
   
   # scatterplot 
   # input function 
@@ -54,6 +58,7 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   
+  observeEvent(input$viewAction, {output$view <- renderTable(head(swiss2))} )
   observeEvent(input$singleAction, {
     currentVariable <- reactive(swiss2[,input$var])  
     output$summaryPlot <- renderPlot(nice(currentVariable()))
