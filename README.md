@@ -13,5 +13,8 @@ B) Angabe:
 C) Allgemeine Orga: 
 	- sollen wir und 'clean code' sachen überlegen?
 	- Aufgaben verteilen und deadlines? 
+	- Tutorials: 
+		- Verständniss / Überblick: https://www.youtube.com/watch?v=G1-HDDDK87M
+		- Code + verwurstbare Bsp. : http://rstudio.github.io/shiny/tutorial/
 	- fällt euch nochwas ein ? 
 
