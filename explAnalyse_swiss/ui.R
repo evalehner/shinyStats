@@ -30,6 +30,8 @@ ui <- fluidPage(
   
   # Auswahl zwischen Datenexploration der einzelnen Variablen und dem Scatter plot 
   # input function:  
+  actionButton(inputId = "singleAction", label = "Explore one Variable"),
+  actionButton(inputId = "scatterAction", label = "Scatterplot"),
   # output function: 
   
   # Auswahl zwischen seperaten für ausgabe von histogram / boxplot / qqplot + summary statistics 
@@ -39,7 +41,8 @@ ui <- fluidPage(
               choices = names(swiss2))),
   # output function 
   plotOutput("summaryPlot"), 
-  verbatimTextOutput("summaryStatisitcs")
+  verbatimTextOutput("summaryStatisitcs"), 
+  plotOutput("scatterplot")
   
   # scatterplot 
   # input function 
@@ -50,8 +53,15 @@ ui <- fluidPage(
 
 
 server <- function(input, output) {
-  currentVariable <- reactive(swiss2[,input$var])
-  output$summaryPlot <- renderPlot(nice(currentVariable()))
-  output$summaryStatisitcs <- renderPrint(summary(currentVariable()))  
+  
+  observeEvent(input$singleAction, {
+    currentVariable <- reactive(swiss2[,input$var])  
+    output$summaryPlot <- renderPlot(nice(currentVariable()))
+    output$summaryStatisitcs <- renderPrint(summary(currentVariable()))  
+  })
+  
+  observeEvent(input$scatterAction, {output$scatterplot <- renderPlot( plot(swiss2) )} )
+  
+  
 }
 shinyApp(ui = ui, server = server)
