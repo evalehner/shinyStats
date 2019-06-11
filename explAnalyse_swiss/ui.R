@@ -28,45 +28,33 @@ ui <- fluidPage(
   
   # Titel
   titlePanel(title = "Explorative Datenanalyse von Datensatz Swiss"), 
+  br(),
+  helpText("Write sth. to explain what to do"),
   
-  
-  # Auswahl zwischen Datenexploration der einzelnen Variablen und dem Scatter plot 
-  # input function:  
-  actionButton(inputId = "viewAction", label = "View Data"),
-  actionButton(inputId = "singleAction", label = "Explore one Variable"),
-  actionButton(inputId = "scatterAction", label = "Scatterplot"),
-  # output function: 
-  
-  # Auswahl zwischen seperaten für ausgabe von histogram / boxplot / qqplot + summary statistics 
-  # input function 
-  #http://rstudio.github.io/shiny/tutorial/#inputs-and-outputs
-  sidebarPanel(selectInput(inputId = "var", label = "Choose a variable", 
-              choices = names(swiss2))),
-  # output function 
-  plotOutput("summaryPlot"), 
-  verbatimTextOutput("summaryStatisitcs"), 
-  plotOutput("scatterplot"),
-  tableOutput("view")
-  
-  # scatterplot 
-  # input function 
-  # output function 
-  
-
-)
+  tabsetPanel(
+    tabPanel("View Raw Data", 
+             tableOutput("view")), 
+    tabPanel("Explore one Variable", 
+             sidebarPanel(selectInput(inputId = "var", label = "Choose a variable", 
+                                      choices = names(swiss2))),
+             plotOutput("summaryPlot"), 
+             verbatimTextOutput("summaryStatisitcs")), 
+    tabPanel("View Scatterplot", plotOutput("scatterplot"))
+  )
+      
+) 
 
 
 server <- function(input, output) {
   
-  observeEvent(input$viewAction, {output$view <- renderTable(head(swiss2))} )
-  observeEvent(input$singleAction, {
-    currentVariable <- reactive(swiss2[,input$var])  
-    output$summaryPlot <- renderPlot(nice(currentVariable()))
-    output$summaryStatisitcs <- renderPrint(summary(currentVariable()))  
-  })
+  output$view <- renderTable(head(swiss2))
+ 
+  currentVariable <- reactive(swiss2[,input$var])  
+  output$summaryPlot <- renderPlot(nice(currentVariable()))
+  output$summaryStatisitcs <- renderPrint(summary(currentVariable()))  
   
-  observeEvent(input$scatterAction, {output$scatterplot <- renderPlot( plot(swiss2) )} )
-  
+  output$scatterplot <- renderPlot( plot(swiss2) )
+
   
 }
 shinyApp(ui = ui, server = server)
