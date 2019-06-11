@@ -22,6 +22,18 @@ nice <- function(data_values, var_name){
   par(def.par)
 }
 
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits = digits)[1]
+  txt <- paste0(prefix, txt)
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+
 # Definition von User Interface 
 
 ui <- fluidPage(
@@ -46,11 +58,20 @@ ui <- fluidPage(
                                         choices = names(swiss2))),
                mainPanel(plotOutput("summaryPlot"), 
                          verbatimTextOutput("summaryStatisitcs")))
-               
+             ), 
+    tabPanel("View Scatterplot", plotOutput("scatterplot")
+             ),
+    tabPanel("View Linear Model to Explain Education", 
+             sidebarLayout(
+               sidebarPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
+                                          choices = names(swiss2))), 
+               mainPanel(verbatimTextOutput("summary_linearModel"))
              )
-             , 
-    tabPanel("View Scatterplot", plotOutput("scatterplot"))
-  )
+            
+      
+    )
+  
+    )
       
 ) 
 
@@ -63,8 +84,12 @@ server <- function(input, output) {
   output$summaryPlot <- renderPlot(nice(currentVariable(), input$var ))
   output$summaryStatisitcs <- renderPrint(summary(currentVariable()))  
   
-  output$scatterplot <- renderPlot( plot(swiss2) )
+  output$scatterplot <- renderPlot( pairs(swiss2, lower.panel = panel.smooth, upper.panel = panel.cor,
+                                          gap=0, row1attop=TRUE) ) # plot(swiss2) liefert scatterplot ohne korrelationskoeffizienten 
 
+  currentLinearModel <- reactive(input$var_4_linearModel)
+  
+  output$summary_linearModel <- renderPlot(currentLinearModel())
   
 }
 shinyApp(ui = ui, server = server)
