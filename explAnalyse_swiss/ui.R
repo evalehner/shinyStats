@@ -64,8 +64,8 @@ ui <- fluidPage(
     tabPanel("View Linear Model to Explain Education", 
              sidebarLayout(
                sidebarPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
-                                          choices = names(swiss2))), 
-               mainPanel(verbatimTextOutput("summary_linearModel"))
+                                          choices = names(swiss2), width = '100%')), 
+               mainPanel(verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE))
              )
             
       
@@ -87,9 +87,10 @@ server <- function(input, output) {
   output$scatterplot <- renderPlot( pairs(swiss2, lower.panel = panel.smooth, upper.panel = panel.cor,
                                           gap=0, row1attop=TRUE) ) # plot(swiss2) liefert scatterplot ohne korrelationskoeffizienten 
 
-  currentLinearModel <- reactive(input$var_4_linearModel)
+  currentLinearModel <- reactive( input$var_4_linearModel )
   
-  output$summary_linearModel <- renderPlot(currentLinearModel())
+  
+  output$summary_linearModel <- renderPrint( currentLinearModel() )
   
 }
 shinyApp(ui = ui, server = server)
