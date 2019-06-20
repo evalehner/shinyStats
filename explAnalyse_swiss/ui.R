@@ -1,9 +1,11 @@
 library(shiny)
 library(datasets)
 
-# Code der nur 1x laufen muss außerhalb ver server Funktion um performance zu verbessern  
+# Code der nur 1x laufen muss außerhalb ver server Funktion um performance zu verbessern 
+# Achtung: app läuft nur wenn man swiss2 manuell 'einließt'
 swiss2 <- data.frame(swiss$Fertility, swiss$Agriculture, swiss$Education, swiss$Catholic,swiss$Infant.Mortality) 
 colnames(swiss2) <- c("Fertility", "Agriculture", "Education" , "Catholic",  "Infant.Mortality")
+
 
 nice <- function(data_values, var_name){
   #layout settings
@@ -37,7 +39,7 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 # Definition von User Interface 
 
 ui <- fluidPage(
-  
+
   # Titel
   titlePanel(title = "Explorative Datenanalyse von Datensatz Swiss"), 
   br(),
@@ -65,7 +67,8 @@ ui <- fluidPage(
              sidebarLayout(
                sidebarPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
                                           choices = names(swiss2), width = '100%')), 
-               mainPanel(verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE))
+               mainPanel(plotOutput(outputId = "linModelPlot"), 
+                         verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE))
              )
             
       
@@ -100,6 +103,10 @@ server <- function(input, output) {
   } else {
     paste("Please choose a variable!")
   }})
+  
+  output$linModelPlot <- renderPlot({ 
+    layout(matrix(c(1,2,3,4), 2,2, byrow = TRUE), respect = T)
+    plot(currentLinearModel() ) })
     
   
 }
