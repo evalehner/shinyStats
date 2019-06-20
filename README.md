@@ -1,7 +1,10 @@
 shinyStats:
+#ACHTUNG:
+	wenn man app das 1. mal startet gibt es oft einen fehler weil data frame nicht richtig gelesen wird.
+	bis wir es richten kann man daten auch manuell in rstudio einlesen und erst nacher app starten 
 
 A) Projekt Aufbau: Für jede Aufgabe eigener Folder 
-
+	UPDATE: hab jz 1 + 2 in der selben app gemacht
 B) Angabe / ToDos / Fragen :  
 
 	1. explorativer Datenanalyse für den Datensatz "swiss"
