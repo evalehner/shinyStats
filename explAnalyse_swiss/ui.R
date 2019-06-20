@@ -105,8 +105,10 @@ server <- function(input, output) {
   }})
   
   output$linModelPlot <- renderPlot({ 
-    layout(matrix(c(1,2,3,4), 2,2, byrow = TRUE), respect = T)
-    plot(currentLinearModel() ) })
+    if( !is.null(input$var_4_linearModel ) ) {
+      layout(matrix(c(1,2,3,4), 2,2, byrow = TRUE), respect = T)
+      plot(currentLinearModel() ) }
+    })
     
   
 }
