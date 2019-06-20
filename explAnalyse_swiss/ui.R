@@ -82,15 +82,25 @@ server <- function(input, output) {
  
   currentVariable <- reactive(swiss2[,input$var])  
   output$summaryPlot <- renderPlot(nice(currentVariable(), input$var ))
-  output$summaryStatisitcs <- renderPrint(summary(currentVariable()))  
+  output$summaryStatisitcs <- renderPrint(summary(currentVariable() ))  
   
   output$scatterplot <- renderPlot( pairs(swiss2, lower.panel = panel.smooth, upper.panel = panel.cor,
                                           gap=0, row1attop=TRUE) ) # plot(swiss2) liefert scatterplot ohne korrelationskoeffizienten 
-
-  currentLinearModel <- reactive( input$var_4_linearModel )
   
+  # Hier wird regressionsmodell schrittweise gebaut
+  # wenn man reaktiven wert weiter verwendet muss man ihn später wieder reaktiv gestalten 
+  # https://stackoverflow.com/questions/26454609/r-shiny-reactive-error
   
-  output$summary_linearModel <- renderPrint( currentLinearModel() )
+  # Achtung: education ist noch drinne!
+  variables <- reactive({ paste( input$var_4_linearModel, sep = " " , collapse = '+') })
+  form <- reactive({  paste("swiss2$Education  ~ ", variables()  ) } ) 
+  currentLinearModel <- reactive( {lm(form(), data = swiss2)} )
+  output$summary_linearModel <- renderPrint({ if( !is.null(input$var_4_linearModel ) ) {
+      summary(currentLinearModel())  
+  } else {
+    paste("Please choose a variable!")
+  }})
+    
   
 }
 shinyApp(ui = ui, server = server)
