@@ -3,10 +3,10 @@ library(datasets)
 
 # Code der nur 1x laufen muss außerhalb ver server Funktion um performance zu verbessern 
 # Achtung: app läuft nur wenn man swiss2 manuell 'einließt'
-# swiss2 <- data.frame(swiss$Fertility, swiss$Agriculture, swiss$Education, swiss$Catholic,swiss$Infant.Mortality) 
-# colnames(swiss2) <- c("Fertility", "Agriculture", "Education" , "Catholic",  "Infant.Mortality")
+data("swiss")
 swiss2 <- swiss
-colnames(swiss2) <- c("Fertility", "Agriculture", "Examination", "Education" , "Catholic",  "Infant.Mortality")
+
+rownames_swiss2 <- rownames(swiss2)
 
 nice <- function(data_values, var_name){
   #layout settings
@@ -49,7 +49,7 @@ ui <- fluidPage(
   tabsetPanel(
     tabPanel("View Raw Data", 
              sidebarPanel(
-               numericInput("obs", "Number of observations to view:", 10, min = 1, max = 47)
+               checkboxGroupInput("obs", "Choose which provinces to show:", choices = rownames_swiss2)
              ), 
              mainPanel(
                tableOutput("view"))
@@ -93,7 +93,7 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   # Tab Raw Data
-  output$view <- renderTable({head(swiss2, n = input$obs)})
+  output$view <- renderTable({swiss2[input$obs,]}, rownames = TRUE)
  
   # Tab Variable Exploration
   currentVariable <- reactive(swiss2[,input$var])  
