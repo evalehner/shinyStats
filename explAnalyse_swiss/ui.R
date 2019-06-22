@@ -48,19 +48,30 @@ ui <- fluidPage(
   tabsetPanel(
     tabPanel("View Raw Data", 
              sidebarPanel(
-               numericInput("obs", "Number of observations to view:", 10)
+               numericInput("obs", "Number of observations to view:", 10, min = 1, max = 47)
              ), 
              mainPanel(
                tableOutput("view"))
              ), 
-    tabPanel("Explore one Variable", 
+    ## Plots and Input aligned horizontally, bad scaling?
+    # tabPanel("Explore one Variable",
+    #          helpText("Explain Purpose"),
+    #          sidebarLayout(
+    #            sidebarPanel(selectInput(inputId = "var", label = "Choose a variable",
+    #                                     choices = names(swiss2))),
+    #            mainPanel(plotOutput("summaryPlot"),
+    #                      verbatimTextOutput("summaryStatistics")))
+    #          ),
+    # Plots and input aligned vertically
+    tabPanel("Explore one Variable",
              helpText("Explain Purpose"),
-             sidebarLayout(
-               sidebarPanel(selectInput(inputId = "var", label = "Choose a variable", 
-                                        choices = names(swiss2))),
-               mainPanel(plotOutput("summaryPlot"), 
-                         verbatimTextOutput("summaryStatisitcs")))
-             ), 
+             verticalLayout(
+               selectInput(inputId = "var", label = "Choose a variable",
+                                        choices = names(swiss2)),
+               plotOutput("summaryPlot", height = "500px"),
+                         verbatimTextOutput("summaryStatistics"))
+             ),
+
     tabPanel("View Scatterplot", plotOutput("scatterplot")
              ),
     tabPanel("View Linear Model to Explain Education", 
@@ -80,15 +91,18 @@ ui <- fluidPage(
 
 
 server <- function(input, output) {
-  
+  # Tab Raw Data
   output$view <- renderTable({head(swiss2, n = input$obs)})
  
+  # Tab Variable Exploration
   currentVariable <- reactive(swiss2[,input$var])  
-  output$summaryPlot <- renderPlot(nice(currentVariable(), input$var ))
-  output$summaryStatisitcs <- renderPrint(summary(currentVariable() ))  
+  output$summaryPlot <- renderPlot(nice(currentVariable(), input$var ), height = 500)
+  output$summaryStatistics <- renderPrint(summary(currentVariable() ))  
   
+  # Tab Scatterplot
   output$scatterplot <- renderPlot( pairs(swiss2, lower.panel = panel.smooth, upper.panel = panel.cor,
-                                          gap=0, row1attop=TRUE) ) # plot(swiss2) liefert scatterplot ohne korrelationskoeffizienten 
+                                          gap=0, row1attop=TRUE), width = 750, height = 750 )  # Change width and height
+                                          # plot(swiss2) liefert scatterplot ohne korrelationskoeffizienten 
   
   # Hier wird regressionsmodell schrittweise gebaut
   # wenn man reaktiven wert weiter verwendet muss man ihn später wieder reaktiv gestalten 
