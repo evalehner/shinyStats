@@ -3,9 +3,10 @@ library(datasets)
 
 # Code der nur 1x laufen muss außerhalb ver server Funktion um performance zu verbessern 
 # Achtung: app läuft nur wenn man swiss2 manuell 'einließt'
-swiss2 <- data.frame(swiss$Fertility, swiss$Agriculture, swiss$Education, swiss$Catholic,swiss$Infant.Mortality) 
-colnames(swiss2) <- c("Fertility", "Agriculture", "Education" , "Catholic",  "Infant.Mortality")
-
+# swiss2 <- data.frame(swiss$Fertility, swiss$Agriculture, swiss$Education, swiss$Catholic,swiss$Infant.Mortality) 
+# colnames(swiss2) <- c("Fertility", "Agriculture", "Education" , "Catholic",  "Infant.Mortality")
+swiss2 <- swiss
+colnames(swiss2) <- c("Fertility", "Agriculture", "Examination", "Education" , "Catholic",  "Infant.Mortality")
 
 nice <- function(data_values, var_name){
   #layout settings
@@ -77,9 +78,9 @@ ui <- fluidPage(
     tabPanel("View Linear Model to Explain Education", 
              sidebarLayout(
                sidebarPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
-                                          choices = names(swiss2), width = '100%')), 
-               mainPanel(plotOutput(outputId = "linModelPlot"), 
-                         verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE))
+                                          choices = names(swiss2[c(1,2,3,5,6)]), width = '100%'), 
+                            verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE)), 
+               mainPanel(plotOutput(outputId = "linModelPlot"))
              )
             
       
@@ -108,21 +109,20 @@ server <- function(input, output) {
   # wenn man reaktiven wert weiter verwendet muss man ihn später wieder reaktiv gestalten 
   # https://stackoverflow.com/questions/26454609/r-shiny-reactive-error
   
-  # Achtung: education ist noch drinne!
   variables <- reactive({ paste( input$var_4_linearModel, sep = " " , collapse = '+') })
-  form <- reactive({  paste("swiss2$Education  ~ ", variables()  ) } ) 
+  form <- reactive({  paste("swiss2$Education  ~ ", variables()  ) } )
   currentLinearModel <- reactive( {lm(form(), data = swiss2)} )
   output$summary_linearModel <- renderPrint({ if( !is.null(input$var_4_linearModel ) ) {
-      summary(currentLinearModel())  
+    summary(currentLinearModel())
   } else {
     paste("Please choose a variable!")
   }})
   
-  output$linModelPlot <- renderPlot({ 
+  output$linModelPlot <- renderPlot({
     if( !is.null(input$var_4_linearModel ) ) {
       layout(matrix(c(1,2,3,4), 2,2, byrow = TRUE), respect = T)
       plot(currentLinearModel() ) }
-    })
+    }, width = 750, height = 750)
     
   
 }
