@@ -27,8 +27,8 @@ nice <- function(data_values, var_name){
 #Funktion for Boxplot (optional)
 boxplot_variable <- function(data_values, var_name){
   #layout settings
-  #def.par <- par(no.readonly = TRUE)
-  #layout(matrix(c(1,2,3),1,3, byrow = FALSE), respect = T)
+  def.par <- par(no.readonly = TRUE)
+  layout(matrix(c(1),1,1, byrow = FALSE), respect = T)
   
   #plots
   boxplot(data_values, horizontal = T)
