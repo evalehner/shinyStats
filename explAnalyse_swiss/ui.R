@@ -1,5 +1,5 @@
 library(shiny)
-library(datasets)
+
 
 # Code der nur 1x laufen muss außerhalb ver server Funktion um performance zu verbessern 
 # Achtung: app läuft nur wenn man swiss2 manuell 'einließt'
