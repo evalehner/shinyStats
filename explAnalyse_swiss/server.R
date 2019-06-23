@@ -1,4 +1,4 @@
-server <- function(input, output) {
+function(input, output) {
   
   # Tab Raw Data
   output$view <- renderTable({swiss2[input$obs,]}, rownames = TRUE)
@@ -32,6 +32,5 @@ server <- function(input, output) {
       layout(matrix(c(1,2,3,4), 2,2, byrow = TRUE), respect = T)
       plot(currentLinearModel() ) }
   }, width = 750, height = 750)
-  
   
 }

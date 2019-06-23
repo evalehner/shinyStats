@@ -1,4 +1,4 @@
-ui <- fluidPage(
+fluidPage(
   
   # Titel
   titlePanel(title = "Explorative Datenanalyse von Datensatz Swiss"), 
@@ -44,9 +44,6 @@ ui <- fluidPage(
                             verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE)), 
                mainPanel(plotOutput(outputId = "linModelPlot"))
              )
-             
-             
     )
-    
   )
 )
