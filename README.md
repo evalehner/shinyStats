@@ -27,3 +27,21 @@ C) Allgemeine Orga:
 		- Code + verwurstbare Bsp. : http://rstudio.github.io/shiny/tutorial/
 	- fällt euch nochwas ein ? 
 
+# TODO: 
+- Thea: Data View: select all button 
+- Thea: Ordnen der Provinzen nach Himmelsrichtungen
+
+- Explore Variable:
+	- Thea: default Boxplot zeigen zu No setzen
+	- Thea: 'Summary erzeugen'
+	- ?: git man möglickeit zur log transformation + möglichkeit anzugeben ob man es für model verwenden kann / es NV ist 
+ 
+- View Scatterplot: 
+	- Richard: Auswahl der Variablen 
+	- Richard: Negative Korrelation anzeigen 
+	- ?: Slider um Korrelationsgrenze zu setzten
+	-  
+- Linear Model: 
+	- Transformationen: log, ?
+	- Eva: Hebelpunkte raus nehmen 
+	- Eva: automatische modelselection
