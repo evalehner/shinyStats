@@ -8,22 +8,36 @@ swiss2 <- swiss
 
 rownames_swiss2 <- rownames(swiss2)
 
+#Function for plotting Histogram and QQPlot
 nice <- function(data_values, var_name){
   #layout settings
   def.par <- par(no.readonly = TRUE)
   layout(matrix(c(1,2,3),1,3, byrow = FALSE), respect = T)
   
   #plots
-  hist(data_values, main = paste("Plot of ", var_name), xlab = paste("better axix names", var_name),  freq = F)
+  hist(data_values, main = paste("Plot of ", var_name), xlab = paste("% of ", var_name),  freq = F)
   lines(density(data_values))
   lines(density(data_values, adjust = 2), col = 2)
-  boxplot(data_values, horizontal = T)
   qqnorm(data_values)
   qqline(data_values, col=2)
   
   #change layout settings back to default
   par(def.par)
 }
+
+#Funktion for Boxplot (optional)
+boxplot_variable <- function(data_values, var_name){
+  #layout settings
+  #def.par <- par(no.readonly = TRUE)
+  #layout(matrix(c(1,2,3),1,3, byrow = FALSE), respect = T)
+  
+  #plots
+  boxplot(data_values, horizontal = T)
+
+  #change layout settings back to default
+  #par(def.par)
+}
+
 
 panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 {
@@ -69,8 +83,11 @@ ui <- fluidPage(
              verticalLayout(
                selectInput(inputId = "var", label = "Choose a variable",
                                         choices = names(swiss2)),
+               selectInput(inputId ="var_statistic", label = "Choose if you want to see statistic of variable", choices = c("Yes", "No")),
+               selectInput(inputId ="var_boxplot", label = "Choose if you want to see boxplot in addition", choices = c("Yes", "No")),
                plotOutput("summaryPlot", height = "500px"),
-                         verbatimTextOutput("summaryStatistics"))
+               verbatimTextOutput("summaryStatistics"),
+               plotOutput("Boxplot", height = "500px"))
              ),
 
     tabPanel("View Scatterplot", plotOutput("scatterplot")
@@ -87,18 +104,17 @@ ui <- fluidPage(
     )
   
     )
-      
-) 
-
+)
 
 server <- function(input, output) {
   # Tab Raw Data
   output$view <- renderTable({swiss2[input$obs,]}, rownames = TRUE)
  
   # Tab Variable Exploration
-  currentVariable <- reactive(swiss2[,input$var])  
+  currentVariable <- reactive(swiss2[,input$var])
   output$summaryPlot <- renderPlot(nice(currentVariable(), input$var ), height = 500)
-  output$summaryStatistics <- renderPrint(summary(currentVariable() ))  
+  output$summaryStatistics <- renderPrint({if (input$var_statistic == "Yes") {summary(currentVariable())}})
+  output$Boxplot <- renderPlot({if (input$var_boxplot == "Yes") {boxplot_variable(currentVariable(), input$var )}})
   
   # Tab Scatterplot
   output$scatterplot <- renderPlot( pairs(swiss2, lower.panel = panel.smooth, upper.panel = panel.cor,
@@ -126,5 +142,6 @@ server <- function(input, output) {
     
   
 }
+
 shinyApp(ui = ui, server = server)
 
