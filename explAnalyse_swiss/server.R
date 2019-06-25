@@ -8,6 +8,7 @@ function(input, output) {
   output$summaryPlot <- renderPlot(nice(currentVariable(), input$var ), height = 500)
   output$summaryStatistics <- renderPrint({if (input$var_statistic == "Yes") {summary(currentVariable())}})
   output$Boxplot <- renderPlot({if (input$var_boxplot == "Yes") {boxplot_variable(currentVariable(), input$var )}})
+  output$summaryPlot_transform <- renderPlot({if (input$var_transform == "Logarithmic") {nice(log(currentVariable()), input$var )}})
   
   # Tab Scatterplot
   output$scatterplot <- renderPlot( pairs(swiss2, lower.panel = panel.smooth, upper.panel = panel.cor,
