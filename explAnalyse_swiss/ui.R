@@ -39,18 +39,46 @@ fluidPage(
     
     tabPanel("View Scatterplot", plotOutput("scatterplot")
     ),
-    tabPanel("View Linear Model to Explain Education", 
-             sidebarLayout(
-               sidebarPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
-                                               choices = names(swiss2[c(1,2,3,5,6)]), width = '100%'), 
-                            verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE), 
-                            # checkbox um modellselektion über stepwise AIC zu sehen 
-                            checkboxInput(inputId = "inStepwiseSelection_AIC", 
-                                          label = "View stepwise AIC selection", value = FALSE)), 
-             
-               mainPanel(plotOutput(outputId = "linModelPlot"), 
-                         verbatimTextOutput(outputId = "outStepwiseSelection_AIC"))
-             )
-    )
+  #   tabPanel("View Linear Model to Explain Education", 
+  #            sidebarLayout(
+  #              sidebarPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
+  #                                              choices = names(swiss2[c(1,2,3,5,6)]), width = '100%'), 
+  #                           verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE), 
+  #                           # checkbox um modellselektion über stepwise AIC zu sehen 
+  #                           checkboxInput(inputId = "inStepwiseSelection_AIC", 
+  #                                         label = "View stepwise AIC selection", value = FALSE)), 
+  #            
+  #              mainPanel(plotOutput(outputId = "linModelPlot"), 
+  #                        verbatimTextOutput(outputId = "outStepwiseSelection_AIC"))
+  #            )
+  #   )
+  # )
+  tabPanel("View Linear Model to Explain Education", 
+           # layout von sidebarlayout ouf fluidRow + column layout geändert. 
+           # I.e. Wir bestimmen manuell wo was anfängt / wir groß es ist etc. 
+           # Grund für Änderung: plot und AIC output sind übereinder angezeigt worden 
+           
+           # 1. Reihe mit Selektionsknöpfen, summary und plots 
+           fluidRow(
+           column(5, 
+                  # selektionsknöpfe, wellPanel sorgt dafür das dieses column grau hinterlegt ist
+                  wellPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
+                                             choices = names(swiss2[c(1,2,3,5,6)]), width = '100%'), 
+                          verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE), 
+                          
+                       # checkbox um modellselektion über stepwise AIC zu sehen 
+                       # AIC ein Wert zum Modellvergleich. je kleiner AIC desto besser
+                          checkboxInput(inputId = "inStepwiseAIC", 
+                                        label = "View stepwise AIC selection", value = FALSE))),
+           column(5, plotOutput(outputId = "linModelPlot"))
+           ),
+           
+           # 2. Reihe mit AIC output 
+           fluidRow(
+           column(5,verbatimTextOutput(outputId = "outStepwiseAIC") )
+           )
+                  
+           
+  )
   )
 )

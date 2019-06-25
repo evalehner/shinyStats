@@ -34,21 +34,9 @@ function(input, output) {
       plot(currentLinearModel() ) }
   }, width = 750, height = 750)
   
-  # selection box für stepwise AIC
-  # output wird angezeigt aber im moment im selben areal wie der plot 
-  #stepwiseAIC <- eventReactive( input$inStepwiseSelection_AIC, {step(currentLinearModel()) }  )
-  #output$outStepwiseSelection_AIC <- renderText(stepwiseAIC )
-  
-  #output$outStepwiseSelection_AIC <- observeEvent( input$inStepwiseSelection_AIC, renderText( 
-  #  {step(currentLinearModel())} ))
-  
-  #observeEvent( input$inStepwiseSelection_AIC, 
-  #              {output$outStepwiseSelection_AIC <- renderText({
-  #                step(currentLinearModel()) }) 
-  #              })
-  
-  output$outStepwiseSelection_AIC <- renderPrint({
-    if( input$inStepwiseSelection_AIC == TRUE) {
+  # AIC modellvergleich output 
+  output$outStepwiseAIC <- renderPrint({
+    if( input$inStepwiseAIC == TRUE) {
       step(currentLinearModel())
     }
   })
