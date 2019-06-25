@@ -43,8 +43,13 @@ fluidPage(
              sidebarLayout(
                sidebarPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
                                                choices = names(swiss2[c(1,2,3,5,6)]), width = '100%'), 
-                            verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE)), 
-               mainPanel(plotOutput(outputId = "linModelPlot"))
+                            verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE), 
+                            # checkbox um modellselektion über stepwise AIC zu sehen 
+                            checkboxInput(inputId = "inStepwiseSelection_AIC", 
+                                          label = "View stepwise AIC selection", value = FALSE)), 
+             
+               mainPanel(plotOutput(outputId = "linModelPlot"), 
+                         verbatimTextOutput(outputId = "outStepwiseSelection_AIC"))
              )
     )
   )
