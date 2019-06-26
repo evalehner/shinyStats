@@ -38,7 +38,15 @@ fluidPage(
              plotOutput("summaryPlot_transform", height = "500px")
     ),
     
-    tabPanel("View Scatterplot", plotOutput("scatterplot")
+    tabPanel("View Scatterplot",
+             sidebarPanel(
+               selectInput("all_scatter", label = "Select Variables to show", choices= c("All", "Select"), selected = "All"),
+               checkboxGroupInput("var_scatter", "", choices = colnames(swiss2)),
+               sliderInput("cor_scatter", label = "Choose a correlation threshold", min = 0, max = 1, value = 0.6),
+               tableOutput("correlated_vars")
+               ),
+             mainPanel(
+               plotOutput("scatterplot"))
     ),
   #   tabPanel("View Linear Model to Explain Education", 
   #            sidebarLayout(

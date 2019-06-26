@@ -17,8 +17,17 @@ function(input, output) {
     })
   
   # Tab Scatterplot
-  output$scatterplot <- renderPlot( pairs(swiss2, lower.panel = panel.smooth, upper.panel = panel.cor,
-                                          gap=0, row1attop=TRUE), width = 750, height = 750 )  # Change width and height
+  output$correlated_vars <- renderTable(cor_threshold_vars(swiss2, input$cor_scatter))
+  
+  output$scatterplot <- renderPlot( pairs(
+    {if (input$all_scatter == "All") {swiss2}
+      else {swiss2[input$var_scatter]}
+    },
+    lower.panel = panel.smooth, upper.panel = panel.cor,
+    gap=0, row1attop=TRUE), width = 750, height = 750 )
+  
+  # output$scatterplot <- renderPlot( pairs(swiss2, lower.panel = panel.smooth, upper.panel = panel.cor,
+  #                                         gap=0, row1attop=TRUE), width = 750, height = 750 )  # Change width and height
   # plot(swiss2) liefert scatterplot ohne korrelationskoeffizienten 
   
   # Hier wird regressionsmodell schrittweise gebaut

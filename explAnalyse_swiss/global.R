@@ -42,12 +42,38 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 {
   usr <- par("usr"); on.exit(par(usr))
   par(usr = c(0, 1, 0, 1))
-  r <- abs(cor(x, y))
+  r <- cor(x, y)
   txt <- format(c(r, 0.123456789), digits = digits)[1]
   txt <- paste0(prefix, txt)
   if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
-  text(0.5, 0.5, txt, cex = cex.cor * r)
+  text(0.5, 0.5, txt, cex = cex.cor * abs(r))
 }
+
+# Funktion für correlation threshold
+cor_threshold_vars <- function(data, cor_threshold) {
+  cor_var_vector = vector()
+  cor_index_df = data.frame(i = 0, j = 0)
+  for ( i in 1:length(data)) {
+    for ( j in 1:length(data)) {
+      cor_var <- cor(data[i], data[j])
+      if (i != j & abs(cor_var) > cor_threshold) {
+        add_to_df <- TRUE
+        for ( row in 1:length(cor_index_df[,1])) {
+            if (i == cor_index_df[row,2] & j == cor_index_df[row,1]){
+            add_to_df <- FALSE
+            }
+        }
+        if (add_to_df == TRUE) {
+          cor_index_df <- rbind(cor_index_df, c(i, j))
+          cor_var_vector <- append(cor_var_vector, paste(rownames(cor_var), " - ", colnames(cor_var)))
+        }
+      }
+    }
+  }
+  return(data.frame(Correlations = cor_var_vector))
+}
+
+
 
 #Function for logarithmic plots
 logarithm_variable <- function(data_values, var_name)
