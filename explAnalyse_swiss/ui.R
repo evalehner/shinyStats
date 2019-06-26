@@ -8,8 +8,9 @@ fluidPage(
   tabsetPanel(
     tabPanel("View Raw Data", 
              sidebarPanel(
-               checkboxGroupInput("obs", "Choose which provinces to show:", choices = rownames_swiss2)
-             ), 
+               selectInput("all", label = "Select provinces", choices= c("All", "None"), selected = "None"),
+               checkboxGroupInput("obs", "Choose which provinces to show:", choices = rownames_swiss2
+             )), 
              mainPanel(
                tableOutput("view"))
     ), 
@@ -33,7 +34,7 @@ fluidPage(
                verbatimTextOutput("summaryStatistics"),
                selectInput(inputId ="var_boxplot", label = "Choose if you want to see boxplot in addition", choices = c("Yes", "No"), selected = "No"),
                plotOutput("Boxplot", height = "500px")),
-             selectInput(inputId ="var_transform", label = "Choose if you want to transform the variable", choices = list( "No", "Yes" =c("Logarithmic", "Else")), selected = "No"),
+             selectInput(inputId ="var_transform", label = "Choose if you want to transform the variable", choices = list( "No", "Yes" =c("Logarithmic", "Normalized", "Polynomial_square")), selected = "No"),
              plotOutput("summaryPlot_transform", height = "500px")
     ),
     
