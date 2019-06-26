@@ -8,8 +8,9 @@ fluidPage(
   tabsetPanel(
     tabPanel("View Raw Data", 
              sidebarPanel(
-               checkboxGroupInput("obs", "Choose which provinces to show:", choices = rownames_swiss2)
-             ), 
+               selectInput("all", label = "Select provinces", choices= c("All", "None"), selected = "None"),
+               checkboxGroupInput("obs", "Choose which provinces to show:", choices = rownames_swiss2
+             )), 
              mainPanel(
                tableOutput("view"))
     ), 

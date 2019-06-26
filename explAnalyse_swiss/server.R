@@ -1,7 +1,9 @@
 function(input, output) {
   
   # Tab Raw Data
-  output$view <- renderTable({swiss2[input$obs,]}, rownames = TRUE)
+  output$view <- renderTable({
+    if (input$all == "All") {swiss2}
+    else if (input$all == "None") {swiss2[input$obs,]}}, rownames = TRUE)
   
   # Tab Variable Exploration
   currentVariable <- reactive(swiss2[,input$var])
