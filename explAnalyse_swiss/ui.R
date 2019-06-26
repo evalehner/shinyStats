@@ -25,18 +25,25 @@ fluidPage(
     #          ),
     # Plots and input aligned vertically
     tabPanel("Explore one Variable",
-             helpText("Explain Purpose"),
-             verticalLayout(
-               selectInput(inputId = "var", label = "Choose a variable",
-                           choices = names(swiss2)),
-               selectInput(inputId ="var_statistic", label = "Choose if you want to see statistic of variable", choices = c("Yes", "No"), selected = "No"),
-               plotOutput("summaryPlot", height = "500px"),
-               verbatimTextOutput("summaryStatistics"),
+             
+             fluidRow(
+               column(4,
+                      wellPanel(
+                        selectInput(inputId = "var", label = "Choose a variable", choices = names(swiss2)),
+               selectInput(inputId ="var_statistic", label = "View 5 number summary", choices = c("Yes", "No"), selected = "No"),
+               
                selectInput(inputId ="var_boxplot", label = "Choose if you want to see boxplot in addition", choices = c("Yes", "No"), selected = "No"),
-               plotOutput("Boxplot", height = "500px")),
-             selectInput(inputId ="var_transform", label = "Choose if you want to transform the variable", choices = list( "No", "Yes" =c("Logarithmic", "Normalized", "Polynomial_square")), selected = "No"),
-             plotOutput("summaryPlot_transform", height = "500px")
-    ),
+              selectInput(inputId ="var_transform", label = "Choose if you want to transform the variable", choices = list( "No", "Yes" =c("Logarithmic", "Normalized", "Polynomial_square")), selected = "No")
+              )),
+             
+             column(8,
+               plotOutput("summaryPlot", height = "600px",  width = "750px"),
+               verbatimTextOutput("summaryStatistics"),
+               plotOutput("Boxplot", height = "400px"),
+               plotOutput("summaryPlot_transform", height = "500px")
+             )
+             )
+             ),
     
     tabPanel("View Scatterplot",
              sidebarPanel(
