@@ -75,6 +75,7 @@ cor_threshold_vars <- function(data, cor_threshold) {
 
 # Funktion für transformieren der Daten für Modell
 add_transformed_columns <- function(var_names, transform, df_to_append, df_to_extract) {
+  number_of_rows <- length(df_to_extract[,1])
   for (i in 1:length(var_names)) {
     if (transform[i] == "Not included") {
       next
@@ -86,15 +87,24 @@ add_transformed_columns <- function(var_names, transform, df_to_append, df_to_ex
       df_to_append <- cbind(df_to_append, log(df_to_extract[which(names(df_to_extract)==var_names[i])]))
     }
     else if (transform[i] == "normalized") {
-      df_to_append <- cbind( "Platzhalter")           # Platzhalter
+      data_to_norm <- df_to_extract[1:number_of_rows, which(names(df_to_extract)==var_names[i])]
+      data_normalized <- data.frame((data_to_norm-mean(data_to_norm))/sd(data_to_norm))
+      names(data_normalized) <- var_names[i]
+      df_to_append <- cbind(df_to_append, data_normalized)
     }
     else if (transform[i] == "polynomial") {
-      df_to_append <- cbind( "Platzhalter")           # Platzhalter
+      data_to_pol <- df_to_extract[1:number_of_rows, which(names(df_to_extract)==var_names[i])]
+      data_polynom <- data.frame((data_to_pol)^2)
+      names(data_polynom) <- var_names[i]
+      df_to_append <- cbind(df_to_append, data_polynom)
     }
   }
   return(df_to_append)
 }
 
+# data_to_norm <- swiss2[1:10,1]
+# data_normalized <- data.frame("Fertility" = (data_to_norm-mean(data_to_norm))/sd(data_to_norm))
+# data_normalized
 
 
 #Function for logarithmic plots

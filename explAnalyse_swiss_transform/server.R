@@ -47,39 +47,38 @@ function(input, output) {
     df <- add_transformed_columns(names(swiss2), var_transform(), df, swiss2)
     return(df)
     })
-  
-  variables <- reactive({ paste( names(variable_work_df()), sep = " " , collapse = '+')})
 
+  variables <- reactive({ paste( names(variable_work_df()), sep = " " , collapse = '+')})
+  
   # output model
   leveragePoints <- reactive({ input$selectedLeveragePoints }) # leverage points in var gespeichert 
   #swissNoLeverage <- reactive({ swiss2[-which(rownames_swiss2 %in% leveragePoints() ),] }) # aus swiss entfert und neuer datensatz erstellt 
   
   myModel <-  reactive( 
-    # wenn keine leverage points ausgewähl werden 
-    if( !is.null(variable_work_df) # wenn variablen ausgesucht wurden 
-        && (input$adjustedModel == FALSE) ) {
-      myformula <- reactive({ paste("Education  ~ ", variables()  ) } )
-      currentLinearModel <- reactive( {lm(myformula(), data = variable_work_df)} )
-      return(currentLinearModel() )} 
-    
-    # wenn keine leverage points ausgewähl werden 
-    else if(!is.null(variable_work_df) 
-              && !is.null(input$selectedLeveragePoints) 
-              && (input$adjustedModel == TRUE)){
-      noLeverageformula <- reactive({  paste("Education ~ ", variables()) }) # modell formel
-      currentLinearModel <- reactive( {lm(noLeverageformula(), data = variable_work_df[-which(rownames(variable_work_df) %in% leveragePoints() ),] )} ) # modell
+    # wenn leverage points ausgewählt werden 
+    if(!is.null(variable_work_df()[2,2]) 
+            && !is.null(input$selectedLeveragePoints) 
+            && (input$adjustedModel == TRUE)){
+      noLeverageformula <- reactive({ paste("Education ~ ", variables() )}) # modell formel
+      currentLinearModel <- reactive( {lm(noLeverageformula(), data = variable_work_df()[-which(rownames(variable_work_df()) %in% leveragePoints() ),] )} ) # modell
       return(currentLinearModel() )
-    } )
+    }
+    # wenn keine leverage points ausgewähl werden 
+    else if( !is.null(variable_work_df()[2,2])) {  # wenn variablen ausgesucht wurden
+      myformula <- reactive({ paste("Education  ~ ", variables() )})
+      currentLinearModel <- reactive( {lm(myformula(), data = variable_work_df())} )
+      return(currentLinearModel() )}
+)
   
   
   output$linModelPlot <- renderPlot({
-    if( !is.null(variable_work_df) ) {
+    if( !is.null(variable_work_df()[2,2])) {
       layout(matrix(c(1,2,3,4), 2,2, byrow = TRUE), respect = T)
       plot(myModel() ) }
   }, width = 750, height = 750)
   
   output$summary_linearModel <- renderPrint({
-    if(is.null(input$variable_work_df)) {
+    if(is.null(variable_work_df()[2,2])) {
       print("Please select a model")
     } else {
     summary(myModel())}
