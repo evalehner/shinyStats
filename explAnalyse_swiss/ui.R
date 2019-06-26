@@ -72,7 +72,8 @@ fluidPage(
            column(5, 
                   # selektionsknöpfe, wellPanel sorgt dafür das dieses column grau hinterlegt ist
                   wellPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
-                                             choices = names(swiss2[c(1,2,3,5,6)]), width = '100%'), 
+                                             choices = names(swiss2[c(1,2,3,5,6)]), width = '100%'),
+                            selectInput(inputId ="log_transform", label = "Choose if you want to logtransform variables", choices = list("None", "Yes"= colnames(swiss2)[c(1,2,3,5,6)]), selected = "None"),
                           verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE), 
       
                        # select and remove leverage points
