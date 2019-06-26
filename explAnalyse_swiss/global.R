@@ -11,7 +11,7 @@ rownames_swiss2 <- rownames(swiss2)
 nice <- function(data_values, var_name){
   #layout settings
   def.par <- par(no.readonly = TRUE)
-  layout(matrix(c(1,2,3),1,3, byrow = FALSE), respect = T)
+  layout(matrix(c(1,2),1,2, byrow = TRUE), respect = T)
   
   #plots
   hist(data_values, main = paste("Plot of ", var_name), xlab = paste("% of ", var_name),  freq = F)
@@ -73,13 +73,45 @@ cor_threshold_vars <- function(data, cor_threshold) {
   return(data.frame(Correlations = cor_var_vector))
 }
 
+# Funktion für transformieren der Daten für Modell
+add_transformed_columns <- function(var_names, transform, df_to_append, df_to_extract) {
+  number_of_rows <- length(df_to_extract[,1])
+  for (i in 1:length(var_names)) {
+    if (transform[i] == "Not included") {
+      next
+    }
+    else if (transform[i] == "Untransformed") {
+      df_to_append <- cbind(df_to_append, df_to_extract[which(names(df_to_extract)==var_names[i])])
+    }
+    else if (transform[i] == "log") {
+      df_to_append <- cbind(df_to_append, log(df_to_extract[which(names(df_to_extract)==var_names[i])]))
+    }
+    else if (transform[i] == "normalized") {
+      data_to_norm <- df_to_extract[1:number_of_rows, which(names(df_to_extract)==var_names[i])]
+      data_normalized <- data.frame((data_to_norm-mean(data_to_norm))/sd(data_to_norm))
+      names(data_normalized) <- var_names[i]
+      df_to_append <- cbind(df_to_append, data_normalized)
+    }
+    else if (transform[i] == "polynomial") {
+      data_to_pol <- df_to_extract[1:number_of_rows, which(names(df_to_extract)==var_names[i])]
+      data_polynom <- data.frame((data_to_pol)^2)
+      names(data_polynom) <- var_names[i]
+      df_to_append <- cbind(df_to_append, data_polynom)
+    }
+  }
+  return(df_to_append)
+}
+
+# data_to_norm <- swiss2[1:10,1]
+# data_normalized <- data.frame("Fertility" = (data_to_norm-mean(data_to_norm))/sd(data_to_norm))
+# data_normalized
 
 
 #Function for logarithmic plots
 logarithm_variable <- function(data_values, var_name)
   {logVariable <- log(data_values)
   def.par <- par(no.readonly = TRUE)
-  layout(matrix(c(1,2,3),1,3, byrow = FALSE), respect = T)
+  layout(matrix(c(1,2),1,2, byrow = TRUE), respect = T)
   
   #plots
   hist(logVariable, main = paste("Plot of ", var_name), xlab = paste("% (log) of ", var_name),  freq = F)
@@ -96,7 +128,7 @@ logarithm_variable <- function(data_values, var_name)
 normalized_variable <- function(data_values, var_name)
 {nomVariable <- (data_values-mean(data_values))/sd(data_values)
 def.par <- par(no.readonly = TRUE)
-layout(matrix(c(1,2,3),1,3, byrow = FALSE), respect = T)
+layout(matrix(c(1,2),1,2, byrow = TRUE), respect = T)
 
 #plots
 hist(nomVariable, main = paste("Plot of ", var_name), xlab = paste("% (normalized) of ", var_name),  freq = F)
@@ -113,7 +145,7 @@ par(def.par)
 polynomial_variable <- function(data_values, var_name)
 {polyVariable <- (data_values)^2
 def.par <- par(no.readonly = TRUE)
-layout(matrix(c(1,2,3),1,3, byrow = FALSE), respect = T)
+layout(matrix(c(1,2),1,2, byrow = TRUE), respect = T)
 
 #plots
 hist(polyVariable, main = paste("Plot of ", var_name), xlab = paste("% (square) of ", var_name),  freq = F)
