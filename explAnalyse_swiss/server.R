@@ -28,6 +28,9 @@ function(input, output) {
   variables <- reactive({ paste( input$var_4_linearModel, sep = " " , collapse = '+') })
   
   # output model
+  leveragePoints <- reactive({ input$selectedLeveragePoints }) # leverage points in var gespeichert 
+  #swissNoLeverage <- reactive({ swiss2[-which(rownames_swiss2 %in% leveragePoints() ),] }) # aus swiss entfert und neuer datensatz erstellt 
+  
   myModel <-  reactive( 
     # wenn keine leverage points ausgewähl werden 
     if( !is.null(input$var_4_linearModel) # wenn variablen ausgesucht wurden 
@@ -40,10 +43,8 @@ function(input, output) {
     else if(!is.null(input$var_4_linearModel) 
               && !is.null(input$selectedLeveragePoints) 
               && (input$adjustedModel == TRUE)){
-      leveragePoints <- reactive({ input$selectedLeveragePoints }) # leverage points in var gespeichert 
-      swissNoLeverage <- reactive({ swiss2[-which(rownames_swiss2 %in% leveragePoints() ),] }) # aus swiss entfert und neuer datensatz erstellt 
       noLeverageformula <- reactive({  paste("Education ~ ", variables()) }) # modell formel
-      currentLinearModel <- reactive( {lm(noLeverageformula(), data = swissNoLeverage() )} ) # modell
+      currentLinearModel <- reactive( {lm(noLeverageformula(), data = swiss2[-which(rownames_swiss2 %in% leveragePoints() ),] )} ) # modell
       return(currentLinearModel() )
     } )
   
