@@ -35,24 +35,46 @@ function(input, output) {
   # https://stackoverflow.com/questions/26454609/r-shiny-reactive-error
   
   variables <- reactive({ paste( input$var_4_linearModel, sep = " " , collapse = '+') })
-  form <- reactive({  paste("swiss2$Education  ~ ", variables()  ) } )
-  currentLinearModel <- reactive( {lm(form(), data = swiss2)} )
-  output$summary_linearModel <- renderPrint({ if( !is.null(input$var_4_linearModel ) ) {
-    summary(currentLinearModel())
-  } else {
-    paste("Please choose a variable!")
-  }})
+  
+  # output model
+  leveragePoints <- reactive({ input$selectedLeveragePoints }) # leverage points in var gespeichert 
+  #swissNoLeverage <- reactive({ swiss2[-which(rownames_swiss2 %in% leveragePoints() ),] }) # aus swiss entfert und neuer datensatz erstellt 
+  
+  myModel <-  reactive( 
+    # wenn keine leverage points ausgewähl werden 
+    if( !is.null(input$var_4_linearModel) # wenn variablen ausgesucht wurden 
+        && (input$adjustedModel == FALSE) ) {
+      myformula <- reactive({  paste("swiss2$Education  ~ ", variables()  ) } )
+      currentLinearModel <- reactive( {lm(myformula(), data = swiss2)} )
+      return(currentLinearModel() )} 
+    
+    # wenn keine leverage points ausgewähl werden 
+    else if(!is.null(input$var_4_linearModel) 
+              && !is.null(input$selectedLeveragePoints) 
+              && (input$adjustedModel == TRUE)){
+      noLeverageformula <- reactive({  paste("Education ~ ", variables()) }) # modell formel
+      currentLinearModel <- reactive( {lm(noLeverageformula(), data = swiss2[-which(rownames_swiss2 %in% leveragePoints() ),] )} ) # modell
+      return(currentLinearModel() )
+    } )
+  
   
   output$linModelPlot <- renderPlot({
     if( !is.null(input$var_4_linearModel ) ) {
       layout(matrix(c(1,2,3,4), 2,2, byrow = TRUE), respect = T)
-      plot(currentLinearModel() ) }
+      plot(myModel() ) }
   }, width = 750, height = 750)
+  
+  output$summary_linearModel <- renderPrint({
+    if(is.null(input$var_4_linearModel)) {
+      print("Please select a model")
+    } else {
+    summary(myModel())}
+    })
   
   # AIC modellvergleich output 
   output$outStepwiseAIC <- renderPrint({
     if( input$inStepwiseAIC == TRUE) {
-      step(currentLinearModel())
+      step(myModel())
     }
   })
 

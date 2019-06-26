@@ -74,12 +74,20 @@ fluidPage(
                   wellPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
                                              choices = names(swiss2[c(1,2,3,5,6)]), width = '100%'), 
                           verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE), 
-                          
+      
+                       # select and remove leverage points
+                       selectInput(inputId="selectedLeveragePoints", label = "select leverage points", choices=rownames(swiss2), multiple = TRUE),
+                       checkboxInput(inputId="adjustedModel", label = "remove leverage points", value = FALSE),
+                       
                        # checkbox um modellselektion über stepwise AIC zu sehen 
                        # AIC ein Wert zum Modellvergleich. je kleiner AIC desto besser
-                          checkboxInput(inputId = "inStepwiseAIC", 
-                                        label = "View stepwise AIC selection", value = FALSE))),
-           column(5, plotOutput(outputId = "linModelPlot"))
+                       checkboxInput(inputId = "inStepwiseAIC", 
+                                     label = "View stepwise AIC selection", value = FALSE)
+                       )),
+            
+           column(5, 
+                  # residual plots 
+                  plotOutput(outputId = "linModelPlot"))
            ),
            
            # 2. Reihe mit AIC output 
