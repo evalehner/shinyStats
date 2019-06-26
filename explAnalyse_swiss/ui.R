@@ -37,7 +37,7 @@ fluidPage(
               )),
              
              column(8,
-               plotOutput("summaryPlot", height = "600px",  width = "750px"),
+               plotOutput("summaryPlot", height = "600px", width = "100%"),
                verbatimTextOutput("summaryStatistics"),
                plotOutput("Boxplot", height = "400px"),
                plotOutput("summaryPlot_transform", height = "500px")
