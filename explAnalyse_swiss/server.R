@@ -40,7 +40,7 @@ function(input, output) {
   #                                       input$education_input, input$catholic_input, input$infant_mortality_input)})
   
   var_transform <- reactive({ c(input$fertility_input, input$agriculture_input, input$examination_input,
-                     input$education_input, input$catholic_input, input$infant_mortality_input) })
+                                input$education_input, input$catholic_input, input$infant_mortality_input) })
   
   variable_work_df <- reactive({
     df <- data.frame(row.names = rownames(swiss2))
@@ -48,7 +48,7 @@ function(input, output) {
     return(df)
     })
 
-  variables <- reactive({ paste( names(variable_work_df()), sep = " " , collapse = '+')})
+  variables <- reactive({ paste( names(variable_work_df()[-which(names(variable_work_df())=="Education")]), sep = " " , collapse = '+')})
   
   # output model
   leveragePoints <- reactive({ input$selectedLeveragePoints }) # leverage points in var gespeichert 
