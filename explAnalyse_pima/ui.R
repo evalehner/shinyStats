@@ -128,7 +128,7 @@ fluidPage(
   ),
 
 
-tabPanel("View Non-Linear Model to Explain Type", 
+tabPanel("View logistic Regression to Explain Type", 
          # layout von sidebarlayout ouf fluidRow + column layout geändert. 
          # I.e. Wir bestimmen manuell wo was anfängt / wir groß es ist etc. 
          # Grund für Änderung: plot und AIC output sind übereinder angezeigt worden 
@@ -142,19 +142,19 @@ tabPanel("View Non-Linear Model to Explain Type",
                     radioButtons(inputId = "type_input_nl", label = "Type", 
                                  choices = c("Untransformed"), width = '100%', inline = TRUE),
                             radioButtons(inputId = "npreg_input_nl", label = "Npreg", 
-                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE, selected = "Untransformed"),
                             radioButtons(inputId = "bp_input_nl", label = "BP", 
-                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE, selected = "Untransformed"),
                             radioButtons(inputId = "skin_input_nl", label = "Skin", 
-                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE, selected = "Untransformed"),
                             radioButtons(inputId = "bmi_input_nl", label = "BMI", 
-                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE, selected = "Untransformed"),
                             radioButtons(inputId = "ped_input_nl", label = "Ped", 
-                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE, selected = "Untransformed"),
                             radioButtons(inputId = "age_input_nl", label = "Age", 
-                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE, selected = "Untransformed"),
                             radioButtons(inputId = "glc_input_nl", label = "Glucose", 
-                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE, selected = "Untransformed"),
                             verbatimTextOutput(outputId = "summary_nonLinearModel", placeholder = TRUE),
                             
                             # select and remove leverage points
