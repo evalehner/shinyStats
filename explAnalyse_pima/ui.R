@@ -122,9 +122,25 @@ tabPanel("View Non-Linear Model to Explain Type",
          fluidRow(
            column(5, 
                   # selektionsknöpfe, wellPanel sorgt dafür das dieses column grau hinterlegt ist
-                  wellPanel(checkboxGroupInput(inputId = "var_4_nonLinearModel", label = "Choose a variable", 
-                                               choices = names(pima[c(1,2,3,4,5,6,7)]), width = '100%'), 
-                            verbatimTextOutput(outputId = "summary_nonLinearModel", placeholder = TRUE), 
+                  wellPanel( 
+                            # selektionsknöpfe, wellPanel sorgt dafür das dieses column grau hinterlegt ist
+                    radioButtons(inputId = "type_input_nl", label = "Type", 
+                                 choices = c("Untransformed"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "npreg_input_nl", label = "Npreg", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "bp_input_nl", label = "BP", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "skin_input_nl", label = "Skin", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "bmi_input_nl", label = "BMI", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "ped_input_nl", label = "Ped", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "age_input_nl", label = "Age", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "glc_input_nl", label = "Glucose", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            verbatimTextOutput(outputId = "summary_nonLinearModel", placeholder = TRUE),
                             
                             # select and remove leverage points
                             selectInput(inputId="nonLinearSelectedLeveragePoints", label = "select leverage points", choices=rownames(pima), multiple = TRUE),
@@ -145,8 +161,6 @@ tabPanel("View Non-Linear Model to Explain Type",
          fluidRow(
            column(5,verbatimTextOutput(outputId = "nonLinearOutStepwiseAIC") )
          )
-         
-         
-  )
+)
 )
 )
