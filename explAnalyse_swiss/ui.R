@@ -85,8 +85,9 @@ fluidPage(
            fluidRow(
            column(4, 
                   # selektionsknöpfe, wellPanel sorgt dafür das dieses column grau hinterlegt ist
-                  wellPanel(radioButtons(inputId = "education_input", label = "Choose if you want to transform Education", 
-                                               choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                  wellPanel(radioButtons("dependent_var", "Choose dependent variable:", choices = names(swiss2), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "education_input", label = "Education", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
                             radioButtons(inputId = "fertility_input", label = "Fertility", 
                                          choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
                             radioButtons(inputId = "agriculture_input", label = "Agriculture", 
