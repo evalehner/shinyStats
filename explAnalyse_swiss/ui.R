@@ -25,25 +25,32 @@ fluidPage(
     #          ),
     # Plots and input aligned vertically
     tabPanel("Explore one Variable",
-             
-             fluidRow(
-               column(4,
-                      wellPanel(
-                        selectInput(inputId = "var", label = "Choose a variable", choices = names(swiss2)),
-               selectInput(inputId ="var_statistic", label = "View 5 number summary", choices = c("Yes", "No"), selected = "No"),
-               
-               selectInput(inputId ="var_boxplot", label = "Choose if you want to see boxplot in addition", choices = c("Yes", "No"), selected = "No"),
-              selectInput(inputId ="var_transform", label = "Choose if you want to transform the variable", choices = list( "No", "Yes" =c("Logarithmic", "Normalized", "Polynomial_square")), selected = "No")
-              )),
-             
-             column(8,
-               plotOutput("summaryPlot", height = "600px", width = "100%"),
-               verbatimTextOutput("summaryStatistics"),
-               plotOutput("Boxplot", height = "400px"),
-               plotOutput("summaryPlot_transform", height = "500px")
-             )
-             )
-             ),
+               verticalLayout(
+               fluidRow(
+                 column(2,
+                        wellPanel(
+                          selectInput(inputId = "var", label = "Choose a variable", choices = names(swiss2)),
+                          selectInput(inputId ="var_statistic", label = "View 5 number summary", choices = c("Yes", "No"), selected = "No"),
+                          
+                          selectInput(inputId ="var_boxplot", label = "Choose if you want to see boxplot in addition", choices = c("Yes", "No"), selected = "No"),
+                          selectInput(inputId ="var_transform", label = "Choose if you want to transform the variable", choices = list( "No", "Yes" =c("Logarithmic", "Normalized", "Polynomial_square")), selected = "No")
+                        )),
+                 column(6,
+                        plotOutput("summaryPlot", height = "450px", width = "auto"),
+                        verbatimTextOutput("summaryStatistics")
+                        ),
+                 column(3,
+                        plotOutput("Boxplot", height = "450px", width = "auto")
+                        )
+                 ),
+               fluidRow(
+                 column(2),
+                 column(6,
+                        plotOutput("summaryPlot_transform", height = "450px", width = "auto")
+                        )
+               )
+
+    )),
     
     tabPanel("View Scatterplot",
              sidebarPanel(
@@ -76,11 +83,21 @@ fluidPage(
            
            # 1. Reihe mit Selektionsknöpfen, summary und plots 
            fluidRow(
-           column(5, 
+           column(4, 
                   # selektionsknöpfe, wellPanel sorgt dafür das dieses column grau hinterlegt ist
-                  wellPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
-                                             choices = names(swiss2[c(1,2,3,5,6)]), width = '100%'),
-                            selectInput(inputId ="log_transform", label = "Choose if you want to logtransform variables", choices = list("None", "Yes"= colnames(swiss2)[c(1,2,3,5,6)]), selected = "None"),
+                  wellPanel(radioButtons(inputId = "education_input", label = "Choose if you want to transform Education", 
+                                               choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "fertility_input", label = "Fertility", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "agriculture_input", label = "Agriculture", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "examination_input", label = "Examination", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "catholic_input", label = "Catholic", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                            radioButtons(inputId = "infant_mortality_input", label = "Infant Mortality", 
+                                         choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+
                           verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE), 
       
                        # select and remove leverage points
@@ -93,14 +110,14 @@ fluidPage(
                                      label = "View stepwise AIC selection", value = FALSE)
                        )),
             
-           column(5, 
+           column(8, 
                   # residual plots 
                   plotOutput(outputId = "linModelPlot"))
            ),
            
            # 2. Reihe mit AIC output 
            fluidRow(
-           column(5,verbatimTextOutput(outputId = "outStepwiseAIC") )
+           column(4,verbatimTextOutput(outputId = "outStepwiseAIC") )
            )
                   
            
