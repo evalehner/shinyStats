@@ -17,15 +17,14 @@ function(input, output) {
     })
   
   # Tab Scatterplot
-  var_scatter <- reactive({ c(input$bp_scatter, input$skin, input$bmi_scatter,
-                              input$ped_scatter, input$age_scatter, input$type_scatter, input$npreg_scatter, input$glu_scatter) })
+  var_scatter <- reactive({ c(input$npreg_scatter, input$glu_scatter, input$bp_scatter, input$skin,
+                              input$bmi_scatter, input$ped_scatter, input$age_scatter, input$type_scatter) })
   
   variable_scatter_df <- reactive({
     df_scatter <- data.frame(row.names = rownames(pima))
     df_scatter <- add_transformed_columns(names(pima), var_scatter(), df_scatter, pima)
     return(df_scatter)
   })
-  
   
   output$correlated_vars <- renderTable(cor_threshold_vars(variable_scatter_df(), input$cor_scatter))
   
