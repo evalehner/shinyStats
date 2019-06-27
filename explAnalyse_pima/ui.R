@@ -3,13 +3,13 @@ fluidPage(
   # Titel
   titlePanel(title = "Explorative Datenanalyse von Datensatz Pima"), 
   br(),
-  helpText("Write sth. to explain what to do"),
+  helpText("A population of women who were at least 21 years old, of Pima Indian heritage was tested for diabetes according to World Health Organization criteria."),
   
   tabsetPanel(
     tabPanel("View Raw Data", 
              sidebarPanel(
                selectInput("all", label = "Select observations", choices= c("All", "None"), selected = "None"),
-               checkboxGroupInput("obs", "Choose which provinces to show:", choices = rownames_pima
+               checkboxGroupInput("obs", "Choose which cases to show:", choices = rownames_pima
              )), 
              mainPanel(
                tableOutput("view"))
@@ -69,30 +69,44 @@ fluidPage(
            
            # 1. Reihe mit Selektionsknöpfen, summary und plots 
            fluidRow(
-           column(5, 
-                  # selektionsknöpfe, wellPanel sorgt dafür das dieses column grau hinterlegt ist
-                  wellPanel(checkboxGroupInput(inputId = "var_4_linearModel", label = "Choose a variable", 
-                                             choices = names(pima[c(1,3,4,5,6,7,8)]), width = '100%'), 
-                          verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE), 
-      
-                       # select and remove leverage points
-                       selectInput(inputId="selectedLeveragePoints", label = "select leverage points", choices=rownames(pima), multiple = TRUE),
-                       checkboxInput(inputId="adjustedModel", label = "remove leverage points", value = FALSE),
-                       
-                       # checkbox um modellselektion über stepwise AIC zu sehen 
-                       # AIC ein Wert zum Modellvergleich. je kleiner AIC desto besser
-                       checkboxInput(inputId = "inStepwiseAIC", 
-                                     label = "View stepwise AIC selection", value = FALSE)
-                       )),
-            
-           column(5, 
-                  # residual plots 
-                  plotOutput(outputId = "linModelPlot"))
+             column(4, 
+                    # selektionsknöpfe, wellPanel sorgt dafür das dieses column grau hinterlegt ist
+                    wellPanel(radioButtons(inputId = "glc_input", label = "Choose if you want to transform Glucose Variable", 
+                                           choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                              radioButtons(inputId = "npreg_input", label = "Npreg", 
+                                           choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                              radioButtons(inputId = "bp_input", label = "BP", 
+                                           choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                              radioButtons(inputId = "skin_input", label = "Skin", 
+                                           choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                              radioButtons(inputId = "bmi_input", label = "BMI", 
+                                           choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                              radioButtons(inputId = "ped_input", label = "Ped", 
+                                           choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                              radioButtons(inputId = "age_input", label = "Age", 
+                                           choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                              radioButtons(inputId = "type_input", label = "Type", 
+                                           choices = c("Not included", "Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+                              verbatimTextOutput(outputId = "summary_linearModel", placeholder = TRUE), 
+                              
+                              # select and remove leverage points
+                              selectInput(inputId="selectedLeveragePoints", label = "select leverage points", choices=rownames(pima), multiple = TRUE),
+                              checkboxInput(inputId="adjustedModel", label = "remove leverage points", value = FALSE),
+                              
+                              # checkbox um modellselektion über stepwise AIC zu sehen 
+                              # AIC ein Wert zum Modellvergleich. je kleiner AIC desto besser
+                              checkboxInput(inputId = "inStepwiseAIC", 
+                                            label = "View stepwise AIC selection", value = FALSE)
+                    )),
+             
+             column(8, 
+                    # residual plots 
+                    plotOutput(outputId = "linModelPlot"))
            ),
            
            # 2. Reihe mit AIC output 
            fluidRow(
-           column(5,verbatimTextOutput(outputId = "outStepwiseAIC") )
+             column(4,verbatimTextOutput(outputId = "outStepwiseAIC") )
            )
                   
            
