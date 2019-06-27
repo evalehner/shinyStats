@@ -153,4 +153,5 @@ function(input, output) {
     }
   })
   
+  output$OddsRatio <- renderPrint({exp(cbind(coef(nonLinearMyModel()), confint(nonLinearMyModel())))})
 }

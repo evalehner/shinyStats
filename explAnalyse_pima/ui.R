@@ -175,7 +175,9 @@ tabPanel("View Non-Linear Model to Explain Type",
          # 2. Reihe mit AIC output 
          fluidRow(
            column(5,verbatimTextOutput(outputId = "nonLinearOutStepwiseAIC") )
-         )
+         ),
+         
+         fluidRow(column(5, verbatimTextOutput((outputId = "OddsRatio"))))
 )
 )
 )
