@@ -54,8 +54,18 @@ fluidPage(
     
     tabPanel("View Scatterplot",
              sidebarPanel(
-               selectInput("all_scatter", label = "Select Variables to show", choices= c("All", "Select"), selected = "All"),
-               checkboxGroupInput("var_scatter", "", choices = colnames(swiss2)),
+               radioButtons(inputId = "education_scatter", label = "Education", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "fertility_scatter", label = "Fertility", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "agriculture_scatter", label = "Agriculture", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "examination_scatter", label = "Examination", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "catholic_scatter", label = "Catholic", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "infant_mortality_scatter", label = "Infant Mortality", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
                sliderInput("cor_scatter", label = "Choose a correlation threshold", min = 0, max = 1, value = 0.6),
                tableOutput("correlated_vars")
                ),

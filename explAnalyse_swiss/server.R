@@ -17,12 +17,18 @@ function(input, output) {
     }, height = 450)
   
   # Tab Scatterplot
-  output$correlated_vars <- renderTable(cor_threshold_vars(swiss2, input$cor_scatter))
+  var_scatter <- reactive({ c(input$fertility_scatter, input$agriculture_scatter, input$examination_scatter,
+                                input$education_scatter, input$catholic_scatter, input$infant_mortality_scatter) })
   
-  output$scatterplot <- renderPlot( pairs(
-    {if (input$all_scatter == "All") {swiss2}
-      else {swiss2[input$var_scatter]}
-    },
+  variable_scatter_df <- reactive({
+    df_scatter <- data.frame(row.names = rownames(swiss2))
+    df_scatter <- add_transformed_columns(names(swiss2), var_scatter(), df_scatter, swiss2)
+    return(df_scatter)
+  })
+  
+  output$correlated_vars <- renderTable(cor_threshold_vars(variable_scatter_df(), input$cor_scatter))
+  
+  output$scatterplot <- renderPlot( pairs({variable_scatter_df()},
     lower.panel = panel.smooth, upper.panel = panel.cor,
     gap=0, row1attop=TRUE), width = 750, height = 750 )
   
