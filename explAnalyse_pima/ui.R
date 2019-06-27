@@ -40,8 +40,23 @@ fluidPage(
     
     tabPanel("View Scatterplot",
              sidebarPanel(
-               selectInput("all_scatter", label = "Select Variables to show", choices= c("All", "Select"), selected = "All"),
-               checkboxGroupInput("var_scatter", "", choices = colnames(pima)),
+               radioButtons(inputId = "npreg_scatter", label = "npreg", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "glu_scatter", label = "glu", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "bp_scatter", label = "bp", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "skin", label = "skin", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "bmi_scatter", label = "bmi", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "ped_scatter", label = "ped", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "age_scatter", label = "age", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               radioButtons(inputId = "type_scatter", label = "type", 
+                            choices = c("Untransformed", "log", "normalized", "polynomial"), width = '100%', inline = TRUE),
+               
                sliderInput("cor_scatter", label = "Choose a correlation threshold", min = 0, max = 1, value = 0.6),
                tableOutput("correlated_vars")
                ),

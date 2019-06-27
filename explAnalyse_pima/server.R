@@ -17,14 +17,27 @@ function(input, output) {
     })
   
   # Tab Scatterplot
-  output$correlated_vars <- renderTable(cor_threshold_vars(pima, input$cor_scatter))
+  var_scatter <- reactive({ c(input$bp_scatter, input$skin, input$bmi_scatter,
+                              input$ped_scatter, input$age_scatter, input$type_scatter, input$npreg_scatter, input$glu_scatter) })
   
-  output$scatterplot <- renderPlot( pairs(
-    {if (input$all_scatter == "All") {pima}
-      else {pima[input$var_scatter]}
-    },
-    lower.panel = panel.smooth, upper.panel = panel.cor,
-    gap=0, row1attop=TRUE), width = 750, height = 750 )
+  variable_scatter_df <- reactive({
+    df_scatter <- data.frame(row.names = rownames(pima))
+    df_scatter <- add_transformed_columns(names(pima), var_scatter(), df_scatter, pima)
+    return(df_scatter)
+  })
+  
+  
+  output$correlated_vars <- renderTable(cor_threshold_vars(variable_scatter_df(), input$cor_scatter))
+  
+  output$scatterplot <- renderPlot( pairs({variable_scatter_df()},
+                                          lower.panel = panel.smooth, upper.panel = panel.cor,
+                                          gap=0, row1attop=TRUE), width = 750, height = 750 )
+  # output$scatterplot <- renderPlot( pairs(
+  #   {if (input$all_scatter == "All") {pima}
+  #     else {pima[input$var_scatter]}
+  #   },
+  #   lower.panel = panel.smooth, upper.panel = panel.cor,
+  #   gap=0, row1attop=TRUE), width = 750, height = 750 )
   
   # output$scatterplot <- renderPlot( pairs(pima, lower.panel = panel.smooth, upper.panel = panel.cor,
   #                                         gap=0, row1attop=TRUE), width = 750, height = 750 )  # Change width and height
