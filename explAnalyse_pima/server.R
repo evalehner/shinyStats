@@ -128,7 +128,7 @@ function(input, output) {
   }, width = 750, height = 750)
   
   output$summary_nonLinearModel <- renderPrint({
-    if( !is.null(variable_work_df_nl()[2,2]) ) {
+    if( is.null(variable_work_df_nl()[2,2]) ) {
       print("Please select a model")
     } else {
       summary(nonLinearMyModel())}
