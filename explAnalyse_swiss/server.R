@@ -39,6 +39,7 @@ function(input, output) {
   # variable_input_vector <- reactive({ c(input$fertility_input, input$agriculture_input, input$examination_input,
   #                                       input$education_input, input$catholic_input, input$infant_mortality_input)})
   
+
   var_transform <- reactive({ c(input$fertility_input, input$agriculture_input, input$examination_input,
                                 input$education_input, input$catholic_input, input$infant_mortality_input) })
   
@@ -48,7 +49,7 @@ function(input, output) {
     return(df)
     })
 
-  variables <- reactive({ paste( names(variable_work_df()[-which(names(variable_work_df())=="Education")]), sep = " " , collapse = '+')})
+  independent_var <- reactive({ paste( names(variable_work_df()[-which(names(variable_work_df())==input$dependent_var)]), sep = " " , collapse = '+')})
   
   # output model
   leveragePoints <- reactive({ input$selectedLeveragePoints }) # leverage points in var gespeichert 
@@ -59,13 +60,13 @@ function(input, output) {
     if(!is.null(variable_work_df()[2,2]) 
             && !is.null(input$selectedLeveragePoints) 
             && (input$adjustedModel == TRUE)){
-      noLeverageformula <- reactive({ paste("Education ~ ", variables() )}) # modell formel
+      noLeverageformula <- reactive({ paste(input$dependent_var," ~ ", independent_var() )}) # modell formel
       currentLinearModel <- reactive( {lm(noLeverageformula(), data = variable_work_df()[-which(rownames(variable_work_df()) %in% leveragePoints() ),] )} ) # modell
       return(currentLinearModel() )
     }
     # wenn keine leverage points ausgewähl werden 
     else if( !is.null(variable_work_df()[2,2])) {  # wenn variablen ausgesucht wurden
-      myformula <- reactive({ paste("Education  ~ ", variables() )})
+      myformula <- reactive({ paste(input$dependent_var," ~ ", independent_var() )})
       currentLinearModel <- reactive( {lm(myformula(), data = variable_work_df())} )
       return(currentLinearModel() )}
 )

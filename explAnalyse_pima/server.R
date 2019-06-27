@@ -43,7 +43,7 @@ function(input, output) {
     return(df)
   })
   
-  variables <- reactive({ paste( names(variable_work_df()), sep = " " , collapse = '+')})
+  variables <- reactive({ paste( names(variable_work_df()[-which(names(variable_work_df())=="glu")]), sep = " " , collapse = '+')})
   
   # output model
   leveragePoints <- reactive({ input$selectedLeveragePoints }) # leverage points in var gespeichert 
@@ -54,13 +54,13 @@ function(input, output) {
     if(!is.null(variable_work_df()[2,2]) 
        && !is.null(input$selectedLeveragePoints) 
        && (input$adjustedModel == TRUE)){
-      noLeverageformula <- reactive({ paste("Glucose ~ ", variables() )}) # modell formel
+      noLeverageformula <- reactive({ paste("glu ~ ", variables() )}) # modell formel
       currentLinearModel <- reactive( {lm(noLeverageformula(), data = variable_work_df()[-which(rownames(variable_work_df()) %in% leveragePoints() ),] )} ) # modell
       return(currentLinearModel() )
     }
     # wenn keine leverage points ausgewähl werden 
     else if( !is.null(variable_work_df()[2,2])) {  # wenn variablen ausgesucht wurden
-      myformula <- reactive({ paste("Glucose  ~ ", variables() )})
+      myformula <- reactive({ paste("glu  ~ ", variables() )})
       currentLinearModel <- reactive( {lm(myformula(), data = variable_work_df())} )
       return(currentLinearModel() )}
   )
@@ -88,37 +88,47 @@ function(input, output) {
 
   
   
-  # output model
-  nonLinearVariables <- reactive({ paste( input$var_4_nonLinearModel, sep = " " , collapse = '+') })
+  # non linear model tab
+  var_transform_nl <- reactive({ c(input$glc_input_nl, input$npreg_input_nl, input$bp_input_nl, input$skin_input_nl,
+                                input$bmi_input_nl, input$ped_input_nl, input$age_input_nl, input$type_input_nl) })
+  
+  variable_work_df_nl <- reactive({
+    df_nl <- data.frame(row.names = rownames(pima))
+    df_nl <- add_transformed_columns(names(pima), var_transform_nl(), df_nl, pima)
+    return(df_nl)
+  })
+
+  nonLinearVariables <- reactive({ paste( names(variable_work_df_nl()[-which(names(variable_work_df_nl())=="type")]), sep = " " , collapse = '+')})
   nonLinearLeveragePoints <- reactive({ input$nonLinearSelectedLeveragePoints }) # leverage points in var gespeichert 
   #swissNoLeverage <- reactive({ pima[-which(rownames_pima %in% leveragePoints() ),] }) # aus swiss entfert und neuer datensatz erstellt 
   
   nonLinearMyModel <-  reactive( 
     # wenn keine leverage points ausgewähl werden 
-    if( !is.null(input$var_4_nonLinearModel) # wenn variablen ausgesucht wurden 
+    
+    if( !is.null(variable_work_df_nl()[2,2]) # wenn variablen ausgesucht wurden 
         && (input$nonLinearAdjustedModel == FALSE) ) {
-      nonLinearMyformula <- reactive({  paste("pima$type  ~ ", nonLinearVariables()  ) } )
-      nonLinearCurrentLinearModel <- reactive( {glm(nonLinearMyformula(), data = pima, family = binomial(link = "logit"))} )
+      nonLinearMyformula <- reactive({  paste("type  ~ ", nonLinearVariables()  ) } )
+      nonLinearCurrentLinearModel <- reactive( {glm(nonLinearMyformula(), data = variable_work_df_nl(), family = binomial(link = "logit"))} )
       return(nonLinearCurrentLinearModel() )} 
     
-    # wenn keine leverage points ausgewähl werden 
-    else if(!is.null(input$var_4_nonlinearModel) 
+    # wenn leverage points ausgewähl werden 
+    else if( !is.null(variable_work_df_nl()[2,2]) 
             && !is.null(input$nonLinearSelectedLeveragePoints) 
             && (input$nonLinearAdjustedModel == TRUE)){
       nonLinearNoLeverageformula <- reactive({  paste("type ~ ", nonLinearVariables()) }) # modell formel
-      nonLinearCurrentLinearModel <- reactive( {glm(nonLinearNoLeverageformula(), data = pima[-which(rownames_pima %in% nonLinearLeveragePoints() ),], family = binomial(link = "logit") )} ) # modell
+      nonLinearCurrentLinearModel <- reactive( {glm(nonLinearNoLeverageformula(), data = variable_work_df_nl()[-which(rownames(variable_work_df_nl()) %in% nonLinearLeveragePoints() ),], family = binomial(link = "logit") )} ) # modell
       return(nonLinearCurrentLinearModel() )
     } )
   
   
   output$nonLinearModelPlot <- renderPlot({
-    if( !is.null(input$var_4_nonLinearModel ) ) {
+    if( !is.null(variable_work_df_nl()[2,2]) ) {
       layout(matrix(c(1,2,3,4), 2,2, byrow = TRUE), respect = T)
       plot(nonLinearMyModel() ) }
   }, width = 750, height = 750)
   
   output$summary_nonLinearModel <- renderPrint({
-    if(is.null(input$var_4_nonLinearModel)) {
+    if( !is.null(variable_work_df_nl()[2,2]) ) {
       print("Please select a model")
     } else {
       summary(nonLinearMyModel())}
